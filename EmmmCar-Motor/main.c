@@ -120,6 +120,7 @@ int main(void)
         {
             BSP_MDrv_AllBrake();
         }
+				
         uint8_t runstate = BSP_MDrv_GetMovStatus();
         putchar(runstate);
         if (runstate)
