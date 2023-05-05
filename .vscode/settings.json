@@ -1,0 +1,6 @@
+{
+    "files.encoding": "gbk",
+    "files.associations": {
+        "gd32e23x_timer.h": "c"
+    }
+}
