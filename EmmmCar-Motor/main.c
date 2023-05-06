@@ -109,12 +109,12 @@ int main(void)
     uint32_t lastPeriod = getSysPeriod();
     while (1)
     {
-        if (getSysPeriod() <= 1000)
+        if (getSysPeriod() <= 2000)
         {
-            BSP_MDrv_SetSpeed(BSP_MDrv_M1, 250, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M2, 250, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M3, 250, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M4, 250, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M1, 300, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M2, 300, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M3, 300, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M4, 300, BSP_MDrv_Forward);
         }
         else
         {
