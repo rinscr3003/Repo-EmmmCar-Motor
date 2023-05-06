@@ -1,5 +1,5 @@
-#ifndef __BSP_BDRV_H__
-#define __BSP_BDRV_H__
+#ifndef __BSP_MDRV_H__
+#define __BSP_MDRV_H__
 
 #include "gd32e23x.h"
 #include <stdint.h>
