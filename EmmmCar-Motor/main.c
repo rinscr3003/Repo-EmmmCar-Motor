@@ -39,6 +39,7 @@ OF SUCH DAMAGE.
 #include "main.h"
 
 #include "bsp_mdrv.h"
+#include "bsp_mspd.h"
 
 void gd_log_com_init()
 {
@@ -105,23 +106,26 @@ int main(void)
     // Init Motors
     BSP_MDrv_Init();
     BSP_MDrv_AllBrake();
+    BSP_MSpd_Init();
 
     uint32_t lastPeriod = getSysPeriod();
     while (1)
     {
-        if (getSysPeriod() <= 2000)
+        if (getSysPeriod() <= 5000)
         {
-            BSP_MDrv_SetSpeed(BSP_MDrv_M1, 300, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M2, 300, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M3, 300, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M4, 300, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M1, 350, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M2, 350, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M3, 350, BSP_MDrv_Forward);
+            BSP_MDrv_SetSpeed(BSP_MDrv_M4, 350, BSP_MDrv_Forward);
         }
         else
         {
             BSP_MDrv_AllBrake();
         }
         uint8_t runstate = BSP_MDrv_GetMovStatus();
-        putchar(runstate);
+        float speeds[4] = {0, 0, 0, 0};
+        BSP_MSpd_GetSpeeds(speeds);
+        printf("speed: %3.2f %3.2f %3.2f %3.2f\n", speeds[0], speeds[1], speeds[2], speeds[3]);
         if (runstate)
         {
             gpio_bit_reset(GPIOC, GPIO_PIN_14);

@@ -1,6 +1,13 @@
 #ifndef __BSP_MDRV_H__
 #define __BSP_MDRV_H__
 
+/*
+ * BSP - Motor Driver
+ * Version = v1.0.0.0
+ * Author = 9223020209
+ * Comment = Supports motors running controlling.
+ */
+
 #include "gd32e23x.h"
 #include <stdint.h>
 

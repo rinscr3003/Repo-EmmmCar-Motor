@@ -534,6 +534,16 @@
               <FileType>5</FileType>
               <FilePath>..\BSP\bsp_mdrv.h</FilePath>
             </File>
+            <File>
+              <FileName>bsp_mspd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\bsp_mspd.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_mspd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\bsp_mspd.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

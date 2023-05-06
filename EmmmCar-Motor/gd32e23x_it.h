@@ -58,4 +58,8 @@ void PendSV_Handler(void);
 /* this function handles SysTick exception */
 void SysTick_Handler(void);
 
+// SpeedMeasure IRQ
+void EXTI4_15_IRQHandler();
+void TIMER5_IRQHandler();
+
 #endif /* GD32E23X_IT_H */

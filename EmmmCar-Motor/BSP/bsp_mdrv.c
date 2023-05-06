@@ -1,6 +1,13 @@
 #include "bsp_mdrv.h"
 #include "gd32e23x.h"
 
+/*
+ * BSP - Motor Driver
+ * Version = v1.0.0.0
+ * Author = 9223020209
+ * Comment = Supports motors running controlling.
+ */
+
 void BSP_MDrv_Init()
 {
     // =======================
@@ -57,7 +64,7 @@ void BSP_MDrv_Init()
     timer_initpara.alignedmode = TIMER_COUNTER_EDGE;
     timer_initpara.counterdirection = TIMER_COUNTER_UP;
     timer_initpara.period = 1023; // fPWM = 558Hz
-    timer_initpara.clockdivision = TIMER_CKDIV_DIV1; // RealFreq 0.5x
+    timer_initpara.clockdivision = TIMER_CKDIV_DIV1;
     timer_initpara.repetitioncounter = 0;
     timer_init(BSP_MDrv_M1M2_TIM, &timer_initpara);
 
