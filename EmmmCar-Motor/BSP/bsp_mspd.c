@@ -11,10 +11,11 @@
  * Comment = Supports motors speed measuring.
  */
 
-#define _BSP_MSpd_HPulseFreq 100000UL
-#define _BSP_MSpd_CalcPeriod 25000U // loop period: 250ms
+#define _BSP_MSpd_HPulseFreq 50000UL
+#define _BSP_MSpd_CalcT 250UL // loop period: 250ms
+#define _BSP_MSpd_CalcPeriod (uint32_t)(_BSP_MSpd_HPulseFreq * _BSP_MSpd_CalcT / 1000.0)
 
-volatile static uint16_t _BSP_MSpd_SigCnt[4] = {0, 0, 0, 0};
+volatile static uint32_t _BSP_MSpd_SigCnt[4] = {0, 0, 0, 0};
 volatile static float _BSP_MSpd_MeasuredSpeed[4] = {0, 0, 0, 0};
 volatile static uint16_t _BSP_MSpd_PulseCnt = 0;
 
@@ -51,19 +52,19 @@ void _BSP_MSpd_PulseIRQ()
 PIDController _BSP_MSpd_PID_M1 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
                                   _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
-                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+                                  _BSP_MSpd_CalcT / 1000.0f};
 PIDController _BSP_MSpd_PID_M2 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
                                   _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
-                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+                                  _BSP_MSpd_CalcT / 1000.0f};
 PIDController _BSP_MSpd_PID_M3 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
                                   _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
-                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+                                  _BSP_MSpd_CalcT / 1000.0f};
 PIDController _BSP_MSpd_PID_M4 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
                                   _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
-                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+                                  _BSP_MSpd_CalcT / 1000.0f};
 PIDController *_BSP_MSpd_PIDControllers[4] = {&_BSP_MSpd_PID_M1, &_BSP_MSpd_PID_M2, &_BSP_MSpd_PID_M3, &_BSP_MSpd_PID_M4};
 float _BSP_MSpd_GivenSpeeds[4] = {0, 0, 0, 0};
 
@@ -118,7 +119,7 @@ void BSP_MSpd_Init()
     timer_initpara.prescaler = 71; // fCnt = 1MHz
     timer_initpara.alignedmode = TIMER_COUNTER_EDGE;
     timer_initpara.counterdirection = TIMER_COUNTER_UP;
-    timer_initpara.period = 9; // fPulse = 100kHz
+    timer_initpara.period = 19; // fPulse = 50kHz
     timer_initpara.clockdivision = TIMER_CKDIV_DIV1;
     timer_init(BSP_MSpd_PulseTIM, &timer_initpara);
 
