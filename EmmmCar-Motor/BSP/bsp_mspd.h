@@ -11,6 +11,8 @@
 #include "gd32e23x.h"
 #include <stdint.h>
 
+#include "bsp_mdrv.h"
+
 #define BSP_MSpd_S1_PORT GPIOB
 #define BSP_MSpd_S2_PORT GPIOB
 #define BSP_MSpd_S3_PORT GPIOB
@@ -40,6 +42,18 @@
 
 #define _BSP_MSpd_SigPerCycle 40
 
+#define _BSP_MSpd_PID_P 127.0f
+#define _BSP_MSpd_PID_I 40.0f
+#define _BSP_MSpd_PID_D 20.0f
+
+#define _BSP_MSpd_PID_TAU 3.00f
+
+#define _BSP_MSpd_PID_LIM_MIN 0.0f
+#define _BSP_MSpd_PID_LIM_MAX  1023.0f
+
+#define _BSP_MSpd_PID_LIM_MIN_INT -300.0f
+#define _BSP_MSpd_PID_LIM_MAX_INT  300.0f
+
 typedef enum
 {
     BSP_MSpd_S1 = 0,
@@ -54,5 +68,7 @@ void _BSP_MSpd_PulseIRQ();
 void BSP_MSpd_Init();
 float BSP_MSpd_GetSpeed(BSP_MSpd_Sensor sensorId);
 void BSP_MSpd_GetSpeeds(float *speeds);
+
+void BSP_MSpd_SetGivenSpeed(BSP_MDrv_Motor motorId,float givenSpeed);
 
 #endif

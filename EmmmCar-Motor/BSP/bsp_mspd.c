@@ -2,6 +2,8 @@
 #include "gd32e23x.h"
 #include <string.h>
 
+#include "PID.h"
+
 /*
  * BSP - Motor Speed Measure
  * Version = v1.0.0.1
@@ -21,6 +23,8 @@ void _BSP_MSpd_SigIRQ(BSP_MSpd_Sensor sensorId)
     _BSP_MSpd_SigCnt[sensorId]++;
 }
 
+void _BSP_MSpd_PIDHandler();
+
 void _BSP_MSpd_PulseIRQ()
 {
     _BSP_MSpd_PulseCnt++;
@@ -39,9 +43,29 @@ void _BSP_MSpd_PulseIRQ()
             _BSP_MSpd_SigCnt[i] = 0;
         }
         _BSP_MSpd_PulseCnt = 0;
+        _BSP_MSpd_PIDHandler();
         timer_interrupt_enable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
     }
 }
+
+PIDController _BSP_MSpd_PID_M1 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+                                  _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
+                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
+                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+PIDController _BSP_MSpd_PID_M2 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+                                  _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
+                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
+                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+PIDController _BSP_MSpd_PID_M3 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+                                  _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
+                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
+                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+PIDController _BSP_MSpd_PID_M4 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+                                  _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
+                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
+                                  _BSP_MSpd_CalcPeriod / 100000.0f};
+PIDController *_BSP_MSpd_PIDControllers[4] = {&_BSP_MSpd_PID_M1, &_BSP_MSpd_PID_M2, &_BSP_MSpd_PID_M3, &_BSP_MSpd_PID_M4};
+float _BSP_MSpd_GivenSpeeds[4] = {0, 0, 0, 0};
 
 void BSP_MSpd_Init()
 {
@@ -104,6 +128,14 @@ void BSP_MSpd_Init()
     timer_interrupt_enable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
     timer_enable(BSP_MSpd_PulseTIM);
     nvic_irq_enable(TIMER5_IRQn, 1U);
+
+    // =======================
+    // Init PID Controllers.
+    // =======================
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        PIDController_Init(_BSP_MSpd_PIDControllers[i]);
+    }
 }
 
 float BSP_MSpd_GetSpeed(BSP_MSpd_Sensor sensorId)
@@ -113,4 +145,34 @@ float BSP_MSpd_GetSpeed(BSP_MSpd_Sensor sensorId)
 void BSP_MSpd_GetSpeeds(float *speeds)
 {
     memcpy(speeds, (const float *)_BSP_MSpd_MeasuredSpeed, 4 * sizeof(float));
+}
+
+void _BSP_MSpd_PIDHandler()
+{
+    for (uint8_t i = 0; i < 4; i++)
+    {
+
+        if (_BSP_MSpd_GivenSpeeds[i] == 0)
+        {
+            PIDController_Update(_BSP_MSpd_PIDControllers[i], _BSP_MSpd_GivenSpeeds[i], _BSP_MSpd_MeasuredSpeed[i]);
+            BSP_MDrv_SetSpeed(i, 0, BSP_MDrv_Forward);
+        }
+        else if (_BSP_MSpd_GivenSpeeds[i] > 0)
+        {
+            PIDController_Update(_BSP_MSpd_PIDControllers[i], _BSP_MSpd_GivenSpeeds[i], _BSP_MSpd_MeasuredSpeed[i]);
+            BSP_MDrv_SetSpeed(i, (uint16_t)_BSP_MSpd_PIDControllers[i]->out, BSP_MDrv_Forward);
+        }
+        else if (_BSP_MSpd_GivenSpeeds[i] < 0)
+        {
+            PIDController_Update(_BSP_MSpd_PIDControllers[i], -_BSP_MSpd_GivenSpeeds[i], _BSP_MSpd_MeasuredSpeed[i]);
+            BSP_MDrv_SetSpeed(i, (uint16_t)_BSP_MSpd_PIDControllers[i]->out, BSP_MDrv_Backward);
+        }
+    }
+}
+
+void BSP_MSpd_SetGivenSpeed(BSP_MDrv_Motor motorId, float givenSpeed)
+{
+    if (givenSpeed < -7.0f || givenSpeed > 7.0f)
+        return;
+    _BSP_MSpd_GivenSpeeds[motorId] = givenSpeed;
 }

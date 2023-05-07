@@ -108,24 +108,19 @@ int main(void)
     BSP_MDrv_AllBrake();
     BSP_MSpd_Init();
 
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1,4.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2,4.0f);
+    //BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3,3.0f);
+    //BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4,3.0f);
+
     uint32_t lastPeriod = getSysPeriod();
     while (1)
     {
-        if (getSysPeriod() <= 5000)
-        {
-            BSP_MDrv_SetSpeed(BSP_MDrv_M1, 350, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M2, 350, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M3, 350, BSP_MDrv_Forward);
-            BSP_MDrv_SetSpeed(BSP_MDrv_M4, 350, BSP_MDrv_Forward);
-        }
-        else
-        {
-            BSP_MDrv_AllBrake();
-        }
-        uint8_t runstate = BSP_MDrv_GetMovStatus();
         float speeds[4] = {0, 0, 0, 0};
         BSP_MSpd_GetSpeeds(speeds);
         printf("speed: %3.2f %3.2f %3.2f %3.2f\n", speeds[0], speeds[1], speeds[2], speeds[3]);
+
+        uint8_t runstate = BSP_MDrv_GetMovStatus();
         if (runstate)
         {
             gpio_bit_reset(GPIOC, GPIO_PIN_14);
@@ -134,6 +129,7 @@ int main(void)
         {
             gpio_bit_set(GPIOC, GPIO_PIN_14);
         }
+
         if (getSysPeriod() - lastPeriod >= 500)
         {
             gpio_bit_toggle(GPIOC, GPIO_PIN_13);

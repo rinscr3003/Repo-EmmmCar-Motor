@@ -31,3 +31,4 @@ EmmmCar-Motor/Keil_project/.vscode/c_cpp_properties.json
 *./axf
 .vscode/c_cpp_properties.json
 *.axf
+*.__i

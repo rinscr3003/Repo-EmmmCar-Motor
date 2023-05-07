@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>GD32E230</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Firmware\CMSIS;..\;..\..\Firmware\GD32E23x_standard_peripheral\Include;..\..\Firmware\CMSIS\GD\GD32E23x\Include;..\BSP</IncludePath>
+              <IncludePath>..\..\Firmware\CMSIS;..\;..\..\Firmware\GD32E23x_standard_peripheral\Include;..\..\Firmware\CMSIS\GD\GD32E23x\Include;..\BSP;..\Libs</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
