@@ -4,7 +4,7 @@
 
 /*
  * BSP - Motor Speed Measure
- * Version = v1.0.0.0
+ * Version = v1.0.0.1
  * Author = 9223020209
  * Comment = Supports motors speed measuring.
  */
@@ -27,15 +27,19 @@ void _BSP_MSpd_PulseIRQ()
     // process
     if (_BSP_MSpd_PulseCnt % _BSP_MSpd_CalcPeriod == 0)
     {
-			timer_interrupt_disable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
+        timer_interrupt_disable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
         // calculate speed
         for (uint8_t i = 0; i < 4; i++)
         {
-            _BSP_MSpd_MeasuredSpeed[i] = ((float)_BSP_MSpd_SigCnt[i] * (float)_BSP_MSpd_HPulseFreq) / ((float)_BSP_MSpd_PulseCnt * (float)_BSP_MSpd_SigPerCycle);
+            float temp = ((float)_BSP_MSpd_SigCnt[i] * (float)_BSP_MSpd_HPulseFreq) / ((float)_BSP_MSpd_PulseCnt * (float)_BSP_MSpd_SigPerCycle);
+            if (temp < 10.5f)
+            {
+                _BSP_MSpd_MeasuredSpeed[i] = temp;
+            }
             _BSP_MSpd_SigCnt[i] = 0;
         }
         _BSP_MSpd_PulseCnt = 0;
-				timer_interrupt_enable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
+        timer_interrupt_enable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
     }
 }
 

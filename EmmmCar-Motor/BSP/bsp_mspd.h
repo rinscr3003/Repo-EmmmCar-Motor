@@ -3,7 +3,7 @@
 
 /*
  * BSP - Motor Speed Measure
- * Version = v1.0.0.0
+ * Version = v1.0.0.1
  * Author = 9223020209
  * Comment = Supports motors speed measuring.
  */
