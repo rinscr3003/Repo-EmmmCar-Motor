@@ -42,17 +42,17 @@
 
 #define _BSP_MSpd_SigPerCycle 40
 
-#define _BSP_MSpd_PID_P 127.0f
-#define _BSP_MSpd_PID_I 40.0f
-#define _BSP_MSpd_PID_D 20.0f
+#define _BSP_MSpd_PID_P 90.0f
+#define _BSP_MSpd_PID_I 35.0f
+#define _BSP_MSpd_PID_D 15.0f
 
-#define _BSP_MSpd_PID_TAU 3.00f
+#define _BSP_MSpd_PID_TAU 1.00f
 
-#define _BSP_MSpd_PID_LIM_MIN 0.0f
+#define _BSP_MSpd_PID_LIM_MIN 300.0f
 #define _BSP_MSpd_PID_LIM_MAX  1023.0f
 
-#define _BSP_MSpd_PID_LIM_MIN_INT -300.0f
-#define _BSP_MSpd_PID_LIM_MAX_INT  300.0f
+#define _BSP_MSpd_PID_LIM_MIN_INT -350.0f
+#define _BSP_MSpd_PID_LIM_MAX_INT  350.0f
 
 typedef enum
 {

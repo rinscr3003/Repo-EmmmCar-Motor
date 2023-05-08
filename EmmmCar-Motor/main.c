@@ -109,9 +109,14 @@ int main(void)
     BSP_MSpd_Init();
 
     BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1,4.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2,4.0f);
-    //BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3,3.0f);
-    //BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4,3.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2,-4.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3,4.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4,-4.0f);
+		
+		//BSP_MDrv_SetSpeed(BSP_MDrv_M1,1023,BSP_MDrv_Forward);
+		//BSP_MDrv_SetSpeed(BSP_MDrv_M2,1023,BSP_MDrv_Backward);
+		//BSP_MDrv_SetSpeed(BSP_MDrv_M3,1023,BSP_MDrv_Forward);
+		//BSP_MDrv_SetSpeed(BSP_MDrv_M4,1023,BSP_MDrv_Backward);
 
     uint32_t lastPeriod = getSysPeriod();
     while (1)
