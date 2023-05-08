@@ -43,12 +43,12 @@
 #define _BSP_MSpd_SigPerCycle 40
 
 #define _BSP_MSpd_PID_P 90.0f
-#define _BSP_MSpd_PID_I 35.0f
-#define _BSP_MSpd_PID_D 15.0f
+#define _BSP_MSpd_PID_I 75.0f
+#define _BSP_MSpd_PID_D 0.8f
 
-#define _BSP_MSpd_PID_TAU 1.00f
+#define _BSP_MSpd_PID_TAU 2.50f
 
-#define _BSP_MSpd_PID_LIM_MIN 300.0f
+#define _BSP_MSpd_PID_LIM_MIN 0.0f
 #define _BSP_MSpd_PID_LIM_MAX  1023.0f
 
 #define _BSP_MSpd_PID_LIM_MIN_INT -350.0f
