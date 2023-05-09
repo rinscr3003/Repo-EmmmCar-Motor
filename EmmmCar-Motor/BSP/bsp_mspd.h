@@ -42,11 +42,11 @@
 
 #define _BSP_MSpd_SigPerCycle 40
 
-#define _BSP_MSpd_PID_P 100.0f
-#define _BSP_MSpd_PID_I 0.0f
-#define _BSP_MSpd_PID_D 0.0f
+#define _BSP_MSpd_PID_P 78.0f
+#define _BSP_MSpd_PID_I 100.0f
+#define _BSP_MSpd_PID_D 7.0f
 
-#define _BSP_MSpd_PID_LIM_MIN 0.0f
+#define _BSP_MSpd_PID_LIM_MIN 150.0f
 #define _BSP_MSpd_PID_LIM_MAX  1023.0f
 
 typedef enum
