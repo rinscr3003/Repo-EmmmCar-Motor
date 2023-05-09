@@ -1,6 +1,7 @@
 {
     "files.encoding": "gbk",
     "files.associations": {
-        "gd32e23x_timer.h": "c"
+        "gd32e23x_timer.h": "c",
+        "bsp_mspd.h": "c"
     }
 }

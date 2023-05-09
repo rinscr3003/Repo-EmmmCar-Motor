@@ -49,21 +49,17 @@ void _BSP_MSpd_PulseIRQ()
     }
 }
 
-PIDController _BSP_MSpd_PID_M1 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+PIDController _BSP_MSpd_PID_M1 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
-                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
                                   _BSP_MSpd_CalcT / 1000.0f};
-PIDController _BSP_MSpd_PID_M2 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+PIDController _BSP_MSpd_PID_M2 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
-                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
                                   _BSP_MSpd_CalcT / 1000.0f};
-PIDController _BSP_MSpd_PID_M3 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+PIDController _BSP_MSpd_PID_M3 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
-                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
                                   _BSP_MSpd_CalcT / 1000.0f};
-PIDController _BSP_MSpd_PID_M4 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D, _BSP_MSpd_PID_TAU,
+PIDController _BSP_MSpd_PID_M4 = {_BSP_MSpd_PID_P, _BSP_MSpd_PID_I, _BSP_MSpd_PID_D,
                                   _BSP_MSpd_PID_LIM_MIN, _BSP_MSpd_PID_LIM_MAX,
-                                  _BSP_MSpd_PID_LIM_MIN_INT, _BSP_MSpd_PID_LIM_MAX_INT,
                                   _BSP_MSpd_CalcT / 1000.0f};
 PIDController *_BSP_MSpd_PIDControllers[4] = {&_BSP_MSpd_PID_M1, &_BSP_MSpd_PID_M2, &_BSP_MSpd_PID_M3, &_BSP_MSpd_PID_M4};
 float _BSP_MSpd_GivenSpeeds[4] = {0, 0, 0, 0};
