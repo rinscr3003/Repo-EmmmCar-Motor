@@ -29,19 +29,6 @@ float PIDController_Update(PIDController *pid, float setpoint, float measurement
 	 */
 	float integrator = pid->Ki * pid->T * error;
 
-	/* Anti-wind-up via integrator clamping */
-	// needless
-	/*if (pid->integrator > pid->limMaxInt)
-	{
-
-		pid->integrator = pid->limMaxInt;
-	}
-	else if (pid->integrator < pid->limMinInt)
-	{
-
-		pid->integrator = pid->limMinInt;
-	}*/
-
 	/*
 	 * Derivative
 	 */
