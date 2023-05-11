@@ -8,7 +8,7 @@ void PIDController_Init(PIDController *pid)
 	/* Clear controller variables */
 	pid->prevError = 0.0f;
 	pid->prevError2 = 0.0f;
-	pid->out = 0.0f;
+	pid->out = pid->limMin;
 }
 
 float PIDController_Update(PIDController *pid, float setpoint, float measurement)
