@@ -46,8 +46,8 @@
 #define _BSP_MSpd_PID_I 90.0f
 #define _BSP_MSpd_PID_D 0.0f
 
-#define _BSP_MSpd_PID_LIM_MIN  150.0f
-#define _BSP_MSpd_PID_LIM_MAX  1023.0f
+#define _BSP_MSpd_PID_LIM_MIN 150.0f
+#define _BSP_MSpd_PID_LIM_MAX 1023.0f
 
 typedef enum
 {
@@ -64,6 +64,6 @@ void BSP_MSpd_Init();
 float BSP_MSpd_GetSpeed(BSP_MSpd_Sensor sensorId);
 void BSP_MSpd_GetSpeeds(float *speeds);
 
-void BSP_MSpd_SetGivenSpeed(BSP_MDrv_Motor motorId,float givenSpeed);
+void BSP_MSpd_SetGivenSpeed(BSP_MDrv_Motor motorId, float givenSpeed);
 
 #endif

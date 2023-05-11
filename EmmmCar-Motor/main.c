@@ -108,19 +108,27 @@ int main(void)
     BSP_MDrv_AllBrake();
     BSP_MSpd_Init();
 
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1,4.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2,-4.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3,4.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4,-4.0f);
-		
-		//BSP_MDrv_SetSpeed(BSP_MDrv_M1,1023,BSP_MDrv_Forward);
-		//BSP_MDrv_SetSpeed(BSP_MDrv_M2,1023,BSP_MDrv_Backward);
-		//BSP_MDrv_SetSpeed(BSP_MDrv_M3,1023,BSP_MDrv_Forward);
-		//BSP_MDrv_SetSpeed(BSP_MDrv_M4,1023,BSP_MDrv_Backward);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1, 3.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2, 3.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3, 3.0f);
+    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4, 3.0f);
+
+    // BSP_MDrv_SetSpeed(BSP_MDrv_M1,1023,BSP_MDrv_Forward);
+    // BSP_MDrv_SetSpeed(BSP_MDrv_M2,1023,BSP_MDrv_Backward);
+    // BSP_MDrv_SetSpeed(BSP_MDrv_M3,1023,BSP_MDrv_Forward);
+    // BSP_MDrv_SetSpeed(BSP_MDrv_M4,1023,BSP_MDrv_Backward);
 
     uint32_t lastPeriod = getSysPeriod();
     while (1)
     {
+        if (getSysPeriod() > 3500)
+        {
+            BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1, 0.0f);
+            BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2, 0.0f);
+            BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3, 0.0f);
+            BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4, 0.0f);
+        }
+
         float speeds[4] = {0, 0, 0, 0};
         BSP_MSpd_GetSpeeds(speeds);
         printf("speed: %3.2f %3.2f %3.2f %3.2f\n", speeds[0], speeds[1], speeds[2], speeds[3]);
