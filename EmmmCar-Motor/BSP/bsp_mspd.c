@@ -19,6 +19,8 @@ volatile static uint32_t _BSP_MSpd_SigCnt[4] = {0, 0, 0, 0};
 volatile static float _BSP_MSpd_MeasuredSpeed[4] = {0, 0, 0, 0};
 volatile static uint16_t _BSP_MSpd_PulseCnt = 0;
 
+volatile static uint8_t _BSP_MSpd_PIDOn = 0;
+
 void _BSP_MSpd_SigIRQ(BSP_MSpd_Sensor sensorId)
 {
     _BSP_MSpd_SigCnt[sensorId]++;
@@ -44,7 +46,10 @@ void _BSP_MSpd_PulseIRQ()
             _BSP_MSpd_SigCnt[i] = 0;
         }
         _BSP_MSpd_PulseCnt = 0;
-        _BSP_MSpd_PIDHandler();
+        if (_BSP_MSpd_PIDOn)
+        {
+            _BSP_MSpd_PIDHandler();
+        }
         timer_interrupt_enable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
     }
 }
@@ -132,6 +137,21 @@ void BSP_MSpd_Init()
     for (uint8_t i = 0; i < 4; i++)
     {
         PIDController_Init(_BSP_MSpd_PIDControllers[i]);
+    }
+}
+
+void BSP_MSpd_SetPIDOn(uint8_t pidOn)
+{
+    if (pidOn)
+    {
+        _BSP_MSpd_PIDOn=1;
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            PIDController_Init(_BSP_MSpd_PIDControllers[i]);
+        }
+        
+    }else{
+        _BSP_MSpd_PIDOn=0;
     }
 }
 

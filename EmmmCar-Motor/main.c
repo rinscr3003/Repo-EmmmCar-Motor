@@ -107,11 +107,7 @@ int main(void)
     BSP_MDrv_Init();
     BSP_MDrv_AllBrake();
     BSP_MSpd_Init();
-
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1, 3.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2, 3.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3, 3.0f);
-    BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4, 3.0f);
+    BSP_MSpd_SetPIDOn(1);
 
     // BSP_MDrv_SetSpeed(BSP_MDrv_M1,1023,BSP_MDrv_Forward);
     // BSP_MDrv_SetSpeed(BSP_MDrv_M2,1023,BSP_MDrv_Backward);
