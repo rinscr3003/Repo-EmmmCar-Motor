@@ -38,6 +38,7 @@ OF SUCH DAMAGE.
 #include "systick.h"
 
 #include "bsp_mspd.h"
+#include "spi_protocol.h"
 
 /*!
     \brief      this function handles NMI exception
@@ -116,6 +117,11 @@ void EXTI4_15_IRQHandler(void)
         _BSP_MSpd_SigIRQ(BSP_MSpd_S4);
         exti_interrupt_flag_clear(BSP_MSpd_S4_EXTINo);
     }
+    if (RESET != exti_interrupt_flag_get(SPIPROC_NSS_EXTINo))
+    {
+        _SPIPROC_SigIRQ(gpio_input_bit_get(SPIPROC_GPIO_PORT,SPIPROC_NSS_PIN)==SET);
+        exti_interrupt_flag_clear(SPIPROC_NSS_EXTINo);
+    }
 }
 
 void TIMER5_IRQHandler()
@@ -124,5 +130,19 @@ void TIMER5_IRQHandler()
     {
         timer_interrupt_flag_clear(TIMER5, TIMER_INT_FLAG_UP);
         _BSP_MSpd_PulseIRQ();
+    }
+}
+
+extern uint8_t spi1_recvbuf[];
+extern uint8_t spi1_sendbuf[];
+extern uint8_t spi1_recvptr;
+extern uint8_t spi1_sendptr;
+
+void SPI1_IRQHandler()
+{
+     if (spi_i2s_interrupt_flag_get(SPI1, SPI_I2S_INT_FLAG_RBNE) != RESET)
+    {
+        spi1_recvbuf[spi1_recvptr++] = spi_i2s_data_receive(SPI1);
+        _SPIPROC_Handler();
     }
 }

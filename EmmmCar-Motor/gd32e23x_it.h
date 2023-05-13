@@ -62,4 +62,7 @@ void SysTick_Handler(void);
 void EXTI4_15_IRQHandler();
 void TIMER5_IRQHandler();
 
+// Control IRQ
+void SPI1_IRQHandler();
+
 #endif /* GD32E23X_IT_H */

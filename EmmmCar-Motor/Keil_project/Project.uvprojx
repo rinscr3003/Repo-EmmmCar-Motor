@@ -399,6 +399,16 @@
               <FileType>1</FileType>
               <FilePath>..\systick.c</FilePath>
             </File>
+            <File>
+              <FileName>spi_protocol.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\spi_protocol.h</FilePath>
+            </File>
+            <File>
+              <FileName>spi_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\spi_protocol.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

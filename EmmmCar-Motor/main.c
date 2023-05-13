@@ -40,6 +40,7 @@ OF SUCH DAMAGE.
 
 #include "bsp_mdrv.h"
 #include "bsp_mspd.h"
+#include "spi_protocol.h"
 
 void gd_log_com_init()
 {
@@ -108,6 +109,8 @@ int main(void)
     BSP_MDrv_AllBrake();
     BSP_MSpd_Init();
     BSP_MSpd_SetPIDOn(1);
+		// Init SPI Comm
+		SPI_Protocol_Init(); 
 
     // BSP_MDrv_SetSpeed(BSP_MDrv_M1,1023,BSP_MDrv_Forward);
     // BSP_MDrv_SetSpeed(BSP_MDrv_M2,1023,BSP_MDrv_Backward);
@@ -117,13 +120,13 @@ int main(void)
     uint32_t lastPeriod = getSysPeriod();
     while (1)
     {
-        if (getSysPeriod() > 3500)
+        /*if (getSysPeriod() > 3500)
         {
             BSP_MSpd_SetGivenSpeed(BSP_MDrv_M1, 0.0f);
             BSP_MSpd_SetGivenSpeed(BSP_MDrv_M2, 0.0f);
             BSP_MSpd_SetGivenSpeed(BSP_MDrv_M3, 0.0f);
             BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4, 0.0f);
-        }
+        }*/
 
         float speeds[4] = {0, 0, 0, 0};
         BSP_MSpd_GetSpeeds(speeds);
