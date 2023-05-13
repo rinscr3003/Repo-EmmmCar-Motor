@@ -92,7 +92,7 @@ void _SPIPROC_Handler()
     uint8_t len = spi1_recvptr;
     if (len == 0) // No Data
         return;
-    // printf("SPI[%d]=%2X\n", len - 1, spi1_recvbuf[len - 1]);
+    printf("SPI[%d]=%2X\n", len - 1, spi1_recvbuf[len - 1]);
     if (spi1_recvbuf[0] >= SPICMD_MAXCMDINDEX || spi1_recvbuf[0] == 0) // Invalid CMDCode
         return;
     switch (spi1_recvbuf[0])
