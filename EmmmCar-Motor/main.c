@@ -93,6 +93,13 @@ int main(void)
     printf("CK_APB2 is %d\r\n", rcu_clock_freq_get(CK_APB2));
 
     // start board init
+	// Init Motors
+    BSP_MDrv_Init();
+    BSP_MDrv_AllBrake();
+    BSP_MSpd_Init();
+    BSP_MSpd_SetPIDOn(1);
+		// Init SPI Comm
+		SPI_Protocol_Init(); 
     // Init Board LEDs
     rcu_periph_clock_enable(RCU_GPIOC);
     gpio_mode_set(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO_PIN_13);
@@ -104,13 +111,7 @@ int main(void)
     gpio_bit_reset(GPIOC, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
     delay_1ms(500);
     gpio_bit_set(GPIOC, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
-    // Init Motors
-    BSP_MDrv_Init();
-    BSP_MDrv_AllBrake();
-    BSP_MSpd_Init();
-    BSP_MSpd_SetPIDOn(1);
-		// Init SPI Comm
-		SPI_Protocol_Init(); 
+    
 
     // BSP_MDrv_SetSpeed(BSP_MDrv_M1,1023,BSP_MDrv_Forward);
     // BSP_MDrv_SetSpeed(BSP_MDrv_M2,1023,BSP_MDrv_Backward);
@@ -128,9 +129,9 @@ int main(void)
             BSP_MSpd_SetGivenSpeed(BSP_MDrv_M4, 0.0f);
         }*/
 
-        float speeds[4] = {0, 0, 0, 0};
-        BSP_MSpd_GetSpeeds(speeds);
-        printf("speed: %3.2f %3.2f %3.2f %3.2f\n", speeds[0], speeds[1], speeds[2], speeds[3]);
+        //float speeds[4] = {0, 0, 0, 0};
+        //BSP_MSpd_GetSpeeds(speeds);
+        //printf("speed: %3.2f %3.2f %3.2f %3.2f\n", speeds[0], speeds[1], speeds[2], speeds[3]);
 
         uint8_t runstate = BSP_MDrv_GetMovStatus();
         if (runstate)

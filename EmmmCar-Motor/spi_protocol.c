@@ -1,5 +1,7 @@
 #include "spi_protocol.h"
 #include "gd32e23x.h"
+#include <string.h>
+#include <stdio.h>
 
 /*
  * SPI Protocol
@@ -10,8 +12,8 @@
 
 uint8_t spi1_recvbuf[32];
 uint8_t spi1_sendbuf[32];
-volatile uint8_t spi1_recvptr;
-volatile uint8_t spi1_sendptr;
+volatile uint8_t spi1_recvptr=0;
+volatile uint8_t spi1_sendptr=0;
 
 void _SPIPROC_SigIRQ(uint8_t nssState)
 {
@@ -62,6 +64,8 @@ void SPI_Protocol_Init()
     // Enable SPI dev
     spi_i2s_interrupt_enable(SPIPROC_DEV, SPI_I2S_INT_RBNE);
     spi_enable(SPIPROC_DEV);
+		memset(spi1_recvbuf,0x00,32);
+		memset(spi1_sendbuf,0x00,32);
     spi1_recvptr = 0;
 }
 
@@ -83,6 +87,7 @@ void _SPIPROC_Handler()
     uint8_t len = spi1_recvptr;
     if (len == 0) // No Data
         return;
+		printf("SPI[%d]=%2X\n",len-1,spi1_recvbuf[len-1]);
     if (spi1_recvbuf[0] >= SPICMD_MAXCMDINDEX || spi1_recvbuf[0] == 0) // Invalid CMDCode
         return;
     switch (spi1_recvbuf[0])
