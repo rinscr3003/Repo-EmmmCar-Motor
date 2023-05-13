@@ -145,5 +145,7 @@ void SPI1_IRQHandler()
     {
         spi1_recvbuf[spi1_recvptr++] = spi_i2s_data_receive(SPI1);
         _SPIPROC_Handler();
+        if (spi1_sendptr < spi1_sendlen)
+            spi_i2s_data_transmit(SPI1, spi1_recvbuf[spi1_sendptr++]);
     }
 }
