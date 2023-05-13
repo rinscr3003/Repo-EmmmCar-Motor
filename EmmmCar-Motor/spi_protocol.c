@@ -71,6 +71,7 @@ void SPI_Protocol_Init()
     memset(spi1_sendbuf, 0x00, 32);
     spi1_recvptr = 0;
     spi1_sendlen = 0;
+    spi1_sendptr = 0;
 }
 
 typedef enum
@@ -91,7 +92,7 @@ void _SPIPROC_Handler()
     uint8_t len = spi1_recvptr;
     if (len == 0) // No Data
         return;
-    printf("SPI[%d]=%2X\n", len - 1, spi1_recvbuf[len - 1]);
+    //printf("SPI[%d]=%2X\n", len - 1, spi1_recvbuf[len - 1]);
     if (spi1_recvbuf[0] >= SPICMD_MAXCMDINDEX || spi1_recvbuf[0] == 0) // Invalid CMDCode
         return;
     switch (spi1_recvbuf[0])
@@ -161,22 +162,30 @@ void _SPIPROC_Handler()
         {
             if (spi1_recvbuf[1] >= 4)
                 break;
-            uint8_t mSpd = (uint8_t)(BSP_MSpd_GetSpeed(spi1_recvbuf[1]) * 10) & 0x7f;
+            uint8_t mSpd = (uint8_t)(BSP_MSpd_GetSpeed(spi1_recvbuf[1]) * 10.0f) & 0x7f;
             uint8_t mDir = (BSP_MDrv_GetMovStatus() & (0x10 << spi1_recvbuf[1])) ? 0x80 : 0x00;
             spi1_sendbuf[0] = mSpd | mDir;
-            spi1_sendlen = 1;
+            spi_i2s_data_transmit(SPIPROC_DEV,spi1_sendbuf[0]);
         }
         break;
 
     case SPICMD_GETSPEEDS:
-        /* code */
+        if (len == 1)
+        {
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                uint8_t mSpd = (uint8_t)(BSP_MSpd_GetSpeed(i) * 10.0f) & 0x7f;
+                uint8_t mDir = (BSP_MDrv_GetMovStatus() & (0x10 << i)) ? 0x80 : 0x00;
+                spi1_sendbuf[i] = mSpd | mDir;
+							spi_i2s_data_transmit(SPIPROC_DEV,spi1_sendbuf[i]);
+            }
+        }
         break;
 
     case SPICMD_GETPIDSTATE:
         if (len == 1)
         {
-            spi1_sendbuf[0] = BSP_MSpd_GetPIDOn();
-            spi1_sendlen = 1;
+            spi_i2s_data_transmit(SPIPROC_DEV,BSP_MSpd_GetPIDOn());
         }
         break;
 

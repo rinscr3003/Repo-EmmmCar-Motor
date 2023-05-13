@@ -6,7 +6,7 @@
 
 /*
  * BSP - Motor Speed Measure
- * Version = v1.0.0.1
+ * Version = v1.0.0.2
  * Author = 9223020209
  * Comment = Supports motors speed measuring.
  */
@@ -17,7 +17,6 @@
 
 volatile static uint32_t _BSP_MSpd_SigCnt[4] = {0, 0, 0, 0};
 volatile static float _BSP_MSpd_MeasuredSpeed[4] = {0, 0, 0, 0};
-volatile static uint16_t _BSP_MSpd_PulseCnt = 0;
 
 volatile static uint8_t _BSP_MSpd_PIDOn = 0;
 
@@ -30,27 +29,19 @@ void _BSP_MSpd_PIDHandler();
 
 void _BSP_MSpd_PulseIRQ()
 {
-    _BSP_MSpd_PulseCnt++;
-    // process
-    if (_BSP_MSpd_PulseCnt % _BSP_MSpd_CalcPeriod == 0)
+    // calculate speed
+    for (uint8_t i = 0; i < 4; i++)
     {
-        timer_interrupt_disable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
-        // calculate speed
-        for (uint8_t i = 0; i < 4; i++)
+        float temp = ((float)_BSP_MSpd_SigCnt[i] * (float)_BSP_MSpd_HPulseFreq) / ((float)_BSP_MSpd_CalcPeriod * (float)_BSP_MSpd_SigPerCycle);
+        if (temp < 10.5f)
         {
-            float temp = ((float)_BSP_MSpd_SigCnt[i] * (float)_BSP_MSpd_HPulseFreq) / ((float)_BSP_MSpd_PulseCnt * (float)_BSP_MSpd_SigPerCycle);
-            if (temp < 10.5f)
-            {
-                _BSP_MSpd_MeasuredSpeed[i] = temp;
-            }
-            _BSP_MSpd_SigCnt[i] = 0;
+            _BSP_MSpd_MeasuredSpeed[i] = temp;
         }
-        _BSP_MSpd_PulseCnt = 0;
-        if (_BSP_MSpd_PIDOn)
-        {
-            _BSP_MSpd_PIDHandler();
-        }
-        timer_interrupt_enable(BSP_MSpd_PulseTIM, TIMER_INT_UP);
+        _BSP_MSpd_SigCnt[i] = 0;
+    }
+    if (_BSP_MSpd_PIDOn)
+    {
+        _BSP_MSpd_PIDHandler();
     }
 }
 
@@ -117,10 +108,10 @@ void BSP_MSpd_Init()
     timer_parameter_struct timer_initpara;
     timer_struct_para_init(&timer_initpara);
     // TIMER-SPD Basic Config
-    timer_initpara.prescaler = 71; // fCnt = 1MHz
+    timer_initpara.prescaler = 1439; // fCnt = 50kHz
     timer_initpara.alignedmode = TIMER_COUNTER_EDGE;
     timer_initpara.counterdirection = TIMER_COUNTER_UP;
-    timer_initpara.period = 19; // fPulse = 50kHz
+    timer_initpara.period = _BSP_MSpd_CalcPeriod - 1; // fCalc = 4Hz
     timer_initpara.clockdivision = TIMER_CKDIV_DIV1;
     timer_init(BSP_MSpd_PulseTIM, &timer_initpara);
 
@@ -149,14 +140,15 @@ void BSP_MSpd_SetPIDOn(uint8_t pidOn)
 {
     if (pidOn)
     {
-        _BSP_MSpd_PIDOn=1;
+        _BSP_MSpd_PIDOn = 1;
         for (uint8_t i = 0; i < 4; i++)
         {
             PIDController_Init(_BSP_MSpd_PIDControllers[i]);
         }
-        
-    }else{
-        _BSP_MSpd_PIDOn=0;
+    }
+    else
+    {
+        _BSP_MSpd_PIDOn = 0;
     }
 }
 
