@@ -13,6 +13,7 @@
 uint8_t spi1_recvbuf[32];
 uint8_t spi1_sendbuf[32];
 volatile uint8_t spi1_recvptr = 0;
+volatile uint8_t spi1_sendlen = 0;
 volatile uint8_t spi1_sendptr = 0;
 
 void _SPIPROC_SigIRQ(uint8_t nssState)
@@ -24,6 +25,8 @@ void _SPIPROC_SigIRQ(uint8_t nssState)
     else
     {
         spi1_recvptr = 0;
+        spi1_sendlen = 0;
+        spi1_sendptr = 0;
         spi_nss_internal_low(SPIPROC_DEV);
     }
 }
@@ -67,7 +70,7 @@ void SPI_Protocol_Init()
     memset(spi1_recvbuf, 0x00, 32);
     memset(spi1_sendbuf, 0x00, 32);
     spi1_recvptr = 0;
-    printf("SPI READY.\n");
+    spi1_sendlen = 0;
 }
 
 typedef enum
@@ -153,7 +156,16 @@ void _SPIPROC_Handler()
         }
         break;
 
-    case SPICMD_GETSPEED:;
+    case SPICMD_GETSPEED:
+        if (len == 2)
+        {
+            if (spi1_recvbuf[1] >= 4)
+                break;
+            uint8_t mSpd = (uint8_t)(BSP_MSpd_GetSpeed(spi1_recvbuf[1]) * 10) & 0x7f;
+            uint8_t mDir = (BSP_MDrv_GetMovStatus() & (0x10 << spi1_recvbuf[1])) ? 0x80 : 0x00;
+            spi1_sendbuf[0] = mSpd | mDir;
+            spi1_sendlen = 1;
+        }
         break;
 
     case SPICMD_GETSPEEDS:
@@ -161,7 +173,11 @@ void _SPIPROC_Handler()
         break;
 
     case SPICMD_GETPIDSTATE:
-        /* code */
+        if (len == 1)
+        {
+            spi1_sendbuf[0] = BSP_MSpd_GetPIDOn();
+            spi1_sendlen = 1;
+        }
         break;
 
     case SPICMD_SETPIDSTATE:

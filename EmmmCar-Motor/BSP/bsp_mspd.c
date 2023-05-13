@@ -140,6 +140,11 @@ void BSP_MSpd_Init()
     }
 }
 
+uint8_t BSP_MSpd_GetPIDOn()
+{
+    return _BSP_MSpd_PIDOn;
+}
+
 void BSP_MSpd_SetPIDOn(uint8_t pidOn)
 {
     if (pidOn)

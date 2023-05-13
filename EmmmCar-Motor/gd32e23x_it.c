@@ -136,6 +136,7 @@ void TIMER5_IRQHandler()
 extern uint8_t spi1_recvbuf[];
 extern uint8_t spi1_sendbuf[];
 extern uint8_t spi1_recvptr;
+extern uint8_t spi1_sendlen;
 extern uint8_t spi1_sendptr;
 
 void SPI1_IRQHandler()
@@ -144,5 +145,7 @@ void SPI1_IRQHandler()
     {
         spi1_recvbuf[spi1_recvptr++] = spi_i2s_data_receive(SPI1);
         _SPIPROC_Handler();
+        if(spi1_sendptr<spi1_sendlen)
+        spi_i2s_data_transmit(SPI1, spi1_sendbuf[spi1_sendptr++]);
     }
 }
