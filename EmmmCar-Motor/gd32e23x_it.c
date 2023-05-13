@@ -119,7 +119,7 @@ void EXTI4_15_IRQHandler(void)
     }
     if (RESET != exti_interrupt_flag_get(SPIPROC_NSS_EXTINo))
     {
-        _SPIPROC_SigIRQ(gpio_input_bit_get(SPIPROC_GPIO_PORT,SPIPROC_NSS_PIN)==SET);
+        _SPIPROC_SigIRQ(gpio_input_bit_get(SPIPROC_GPIO_PORT, SPIPROC_NSS_PIN) == SET);
         exti_interrupt_flag_clear(SPIPROC_NSS_EXTINo);
     }
 }
@@ -140,7 +140,7 @@ extern uint8_t spi1_sendptr;
 
 void SPI1_IRQHandler()
 {
-     if (spi_i2s_interrupt_flag_get(SPI1, SPI_I2S_INT_FLAG_RBNE) != RESET)
+    if (spi_i2s_interrupt_flag_get(SPI1, SPI_I2S_INT_FLAG_RBNE) != RESET)
     {
         spi1_recvbuf[spi1_recvptr++] = spi_i2s_data_receive(SPI1);
         _SPIPROC_Handler();

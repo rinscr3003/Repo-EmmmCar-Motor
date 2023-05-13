@@ -12,8 +12,8 @@
 
 uint8_t spi1_recvbuf[32];
 uint8_t spi1_sendbuf[32];
-volatile uint8_t spi1_recvptr=0;
-volatile uint8_t spi1_sendptr=0;
+volatile uint8_t spi1_recvptr = 0;
+volatile uint8_t spi1_sendptr = 0;
 
 void _SPIPROC_SigIRQ(uint8_t nssState)
 {
@@ -31,18 +31,18 @@ void _SPIPROC_SigIRQ(uint8_t nssState)
 void SPI_Protocol_Init()
 {
     // Interrupt on
-    nvic_irq_enable(SPI1_IRQn, 0);
+    nvic_irq_enable(SPI1_IRQn, 1U);
     // Clock on
     rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_SPI1);
     // GPIO config
     gpio_af_set(SPIPROC_GPIO_PORT, GPIO_AF_0, SPIPROC_SCK_PIN | SPIPROC_MISO_PIN | SPIPROC_MOSI_PIN);
     gpio_mode_set(SPIPROC_GPIO_PORT, GPIO_MODE_AF, GPIO_PUPD_NONE, SPIPROC_SCK_PIN | SPIPROC_MISO_PIN | SPIPROC_MOSI_PIN);
-    gpio_output_options_set(SPIPROC_GPIO_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, SPIPROC_SCK_PIN | SPIPROC_MISO_PIN | SPIPROC_MOSI_PIN);
+    gpio_output_options_set(SPIPROC_GPIO_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, SPIPROC_MISO_PIN);
     // NSS Interrupt config
-    gpio_mode_set(SPIPROC_GPIO_PORT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, SPIPROC_NSS_PIN);
-    rcu_periph_clock_enable(RCU_CFGCMP);
-    nvic_irq_enable(EXTI4_15_IRQn, 1U);
+    gpio_mode_set(SPIPROC_GPIO_PORT, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, SPIPROC_NSS_PIN);
+    // rcu_periph_clock_enable(RCU_CFGCMP);
+    // nvic_irq_enable(EXTI4_15_IRQn, 0U);
     syscfg_exti_line_config(SPIPROC_NSS_EXTIPORT, SPIPROC_NSS_EXTIPin);
     exti_init(SPIPROC_NSS_EXTINo, EXTI_INTERRUPT, EXTI_TRIG_BOTH);
     exti_interrupt_flag_clear(SPIPROC_NSS_EXTINo);
@@ -56,7 +56,7 @@ void SPI_Protocol_Init()
     spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
     spi_init_struct.device_mode = SPI_SLAVE;
     spi_init_struct.frame_size = SPI_FRAMESIZE_8BIT;
-    spi_init_struct.clock_polarity_phase = SPI_CK_PL_LOW_PH_1EDGE;
+    spi_init_struct.clock_polarity_phase = SPI_CK_PL_HIGH_PH_2EDGE;
     spi_init_struct.nss = SPI_NSS_SOFT;
     spi_init_struct.endian = SPI_ENDIAN_MSB;
     spi_init(SPIPROC_DEV, &spi_init_struct);
@@ -64,9 +64,10 @@ void SPI_Protocol_Init()
     // Enable SPI dev
     spi_i2s_interrupt_enable(SPIPROC_DEV, SPI_I2S_INT_RBNE);
     spi_enable(SPIPROC_DEV);
-		memset(spi1_recvbuf,0x00,32);
-		memset(spi1_sendbuf,0x00,32);
+    memset(spi1_recvbuf, 0x00, 32);
+    memset(spi1_sendbuf, 0x00, 32);
     spi1_recvptr = 0;
+    printf("SPI READY.\n");
 }
 
 typedef enum
@@ -87,7 +88,7 @@ void _SPIPROC_Handler()
     uint8_t len = spi1_recvptr;
     if (len == 0) // No Data
         return;
-		printf("SPI[%d]=%2X\n",len-1,spi1_recvbuf[len-1]);
+    printf("SPI[%d]=%2X\n", len - 1, spi1_recvbuf[len - 1]);
     if (spi1_recvbuf[0] >= SPICMD_MAXCMDINDEX || spi1_recvbuf[0] == 0) // Invalid CMDCode
         return;
     switch (spi1_recvbuf[0])
@@ -140,19 +141,19 @@ void _SPIPROC_Handler()
         break;
 
     case SPICMD_SETSPEEDS: // 1byte 10xSpeed(rAlign7bit) *4
-        if(len==5){
-            for(uint8_t i=0;i<4;i++)
-             {
-                float uSpd = (int8_t)(spi1_recvbuf[i+1] & 0x7f);
-                uint8_t uDir = (spi1_recvbuf[i+1] & 0x80) == 0x80;
+        if (len == 5)
+        {
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                float uSpd = (int8_t)(spi1_recvbuf[i + 1] & 0x7f);
+                uint8_t uDir = (spi1_recvbuf[i + 1] & 0x80) == 0x80;
                 uSpd /= 10.0f;
                 BSP_MSpd_SetGivenSpeed(i, uSpd * ((uDir) ? -1.0f : 1.0f));
             }
         }
         break;
 
-    case SPICMD_GETSPEED:
-        ;
+    case SPICMD_GETSPEED:;
         break;
 
     case SPICMD_GETSPEEDS:
@@ -164,8 +165,9 @@ void _SPIPROC_Handler()
         break;
 
     case SPICMD_SETPIDSTATE:
-        if(len==1){
-            BSP_MSpd_SetPIDOn(spi1_recvbuf[1]==0x01);
+        if (len == 1)
+        {
+            BSP_MSpd_SetPIDOn(spi1_recvbuf[1] == 0x01);
         }
         break;
 
