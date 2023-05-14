@@ -191,7 +191,7 @@ void _SPIPROC_Handler()
         break;
 
     case SPICMD_SETPIDSTATE:
-        if (len == 1)
+        if (len == 2)
         {
             BSP_MSpd_SetPIDOn(spi1_recvbuf[1] == 0x01);
         }
